@@ -141,3 +141,31 @@ violent_crime_by_neigh_cluster2[
   str_split_fixed(violent_crime_by_neigh_cluster2$NEIGHBORHOOD_CLUSTER, ' ', 2)
 violent_crime_by_neigh_cluster2$Cluster_word <- NULL
 ```
+
+```{r}
+#| warning: false
+#| message: false
+#Creating new number of robberies factor variable
+  #that contains ranges
+violent_crime_by_neigh_cluster2$`Number of robberies` <- NA
+violent_crime_by_neigh_cluster2$`Number of robberies`[
+  violent_crime_by_neigh_cluster2$ROBBERY >= 0 & 
+    violent_crime_by_neigh_cluster2$ROBBERY < 40
+  ] <- "0-39"
+violent_crime_by_neigh_cluster2$`Number of robberies`[
+  violent_crime_by_neigh_cluster2$ROBBERY >= 40 & 
+    violent_crime_by_neigh_cluster2$ROBBERY < 80
+  ] <- "40-79"
+violent_crime_by_neigh_cluster2$`Number of robberies`[
+  violent_crime_by_neigh_cluster2$ROBBERY >= 80 & 
+    violent_crime_by_neigh_cluster2$ROBBERY < 120
+  ] <- "80-119"
+violent_crime_by_neigh_cluster2$`Number of robberies`[
+  violent_crime_by_neigh_cluster2$ROBBERY >= 120 & 
+    violent_crime_by_neigh_cluster2$ROBBERY < 160
+  ] <- "120+"
+
+violent_crime_by_neigh_cluster2$`Number of robberies` <- 
+  factor(violent_crime_by_neigh_cluster2$`Number of robberies`,
+  levels=c("0-39","40-79", "80-119", "120+"))
+```

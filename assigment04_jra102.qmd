@@ -1,5 +1,5 @@
 ---
-title: "Assignment 04"
+title: "Assignment 04: Analysis of crime in Washington, DC"
 author: "Jacob Ausubel"
 date: "10/08/23"
 format: html

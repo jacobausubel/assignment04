@@ -11,3 +11,7 @@ urlcolor: blue
 # Link to dataset
 
 https://opendata.dc.gov/datasets/DCGIS::crime-incidents-in-2021/about
+
+# Topic and motivation
+
+In this analysis, I demonstrate that violent crime is much more common in some parts of Washington, DC than in others. The motivation for the assignment is an uptick in crime in the city in recent years that has received substantial media attention. Lawmakers and policymakers need to keep variation in homicides, sex abuses, assaults with dangerous weapons, and robberies between wards and neighborhood clusters in mind when designing programs aimed at curbing violent crime.

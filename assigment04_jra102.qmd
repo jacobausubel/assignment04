@@ -236,3 +236,37 @@ graph2
 This faceted bar graph shows the number of assaults with dangerous weapons, homicides, robberies, and sex abuses that happened in each of the eight wards of Washington, DC in 2021. The graph suggests that homicides and sex abuses were relatively rare compared to the other two types of violent crime. In addition, the graph shows that assaults with dangerous weapons and robberies were especially likely to happen in Wards 7 and 8 but were rare in Ward 3. Variation in the frequency of homicides and sex abuses between wards were much smaller.
 
 The bar graph suggests that simply counting the number of violent crimes in each ward, as Graph 1 does, is not telling the full story. Rather, we need to break down the numbers by offense type in order to fully understand crime in Washington, DC.
+
+# Third graph
+
+```{r}
+#Adding third graph
+cors <- cor(violent_crime_by_neigh_cluster2$`ASSAULT W/DANGEROUS WEAPON`,
+  violent_crime_by_neigh_cluster2$ROBBERY)
+graph3 <- violent_crime_by_neigh_cluster2 %>%
+#Aesthetic options: x, y, label, alpha
+  ggplot(aes(x = `ASSAULT W/DANGEROUS WEAPON`, 
+    y = ROBBERY, 
+    label = Cluster_num,
+    alpha = ROBBERY)) +
+#Non-aesthetic option: pch
+  geom_point(pch = 17) +
+  geom_smooth(method = "lm", se = FALSE) +
+#Non-aesthetic options: hjust, vjust, size, nudge_x
+  geom_text(hjust=0, vjust=0, size = 2.5, nudge_x = 3) +
+  xlab("Number of assaults with dangerous weapons") +
+  ylab("Number of robberies") +
+  labs(subtitle = "Places with a lot of assaults with dangerous \nweapons also tend to have a lot of robberies",
+  caption = "Source: Open Data DC (2021)",
+  alpha = "Number of \nrobberies") +
+  ggtitle("Comparing two types of violent \ncrime by neighborhood cluster") +
+  theme_clean()
+#Non-aesthetic options: x, y, label
+graph3 + annotate("text",x=125, y=25, label=paste("r=",round(cors,3)))
+```
+
+This scatterplot shows that there is a positive relationship between the number of assaults with dangerous weapons (x variable) and the number of robberies (y variable) in a neighborhood cluster. In other words, parts of Washington, DC with high levels of one type of crime also tend to have high levels of the other type of crime. The Pearson correlation coefficient of 0.839 is very high.
+
+Neighborhood clusters that had especially high levels of both assaults with dangerous weapons and robberies in 2021 include Cluster 2 (Columbia Heights, Mt. Pleasant, Pleasant Plains, Park View), Cluster 25 (NoMa, Union Station, Stanton Park, Kingman Park), and Cluster 39 (Congress Heights, Bellevue, Washington Highlands). Cluster 39 is in Ward 8, which I already showed has a high prevalence of violent crime.  However, Cluster 2 is in Ward 1 and Cluster 25 is split between Wards 6 and 7. This shows that even wards with lower overall levels of overall violent crime still have subsections that are very affected by it. The nuance is missed by Graphs 1 and 2 and so the inclusion of Graph 3 helps to tell a more complete story of crime in Washington, DC.
+
+One aspect of the scatterplot is slightly misleading: it shows *counts* of violent crimes, regardless of how many people live in a neighborhood cluster. If I conducted a more in-depth analysis in the future, I would want to account for the fact that some neighborhood clusters have much larger populations than others. If more people live in a neighborhood cluster, there are more opportunities for violent crime to happen, at least in theory.

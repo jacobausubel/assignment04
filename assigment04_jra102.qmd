@@ -15,3 +15,129 @@ https://opendata.dc.gov/datasets/DCGIS::crime-incidents-in-2021/about
 # Topic and motivation
 
 In this analysis, I demonstrate that violent crime is much more common in some parts of Washington, DC than in others. The motivation for the assignment is an uptick in crime in the city in recent years that has received substantial media attention. Lawmakers and policymakers need to keep variation in homicides, sex abuses, assaults with dangerous weapons, and robberies between wards and neighborhood clusters in mind when designing programs aimed at curbing violent crime.
+
+# Initial data setup, cleaning, and manipulation
+
+```{r}
+#| warning: false
+#| message: false
+#Reading in packages
+library(tidyverse)
+library(readxl)
+library(ggthemes)
+```
+
+```{r}
+#| warning: false
+#| message: false
+#Removing datasets from working directory
+rm(list = ls())
+```
+
+```{r}
+#| warning: false
+#| message: false
+
+#Reading in crime dataset
+crime21 <- read.csv("Crime_Incidents_in_2021.csv")
+
+#Creating violent crime variable
+#1=Yes, 0=No
+crime21$violent_crime <-
+  ifelse(crime21$OFFENSE == "HOMICIDE", 1,
+    ifelse(crime21$OFFENSE == "SEX ABUSE", 1,
+      ifelse(crime21$OFFENSE == "ASSAULT W/DANGEROUS WEAPON", 1, 
+        ifelse(crime21$OFFENSE == "ROBBERY", 1, 0))))
+```
+
+```{r}
+#| warning: false
+#| message: false
+
+#Creating a data frame with 8 rows (one for each ward)
+#Column for number of violent crimes
+violent_crime_by_ward <- crime21 %>%
+  filter(violent_crime == 1) %>%
+  group_by(WARD) %>%
+  summarise(count = n()) %>%
+  filter(!is.na(WARD))
+```
+
+```{r}
+#| warning: false
+#| message: false
+#Creating a data frame with 32 rows
+#Want the counts for violent crimes in each ward broken
+  #down by offense type
+#8 wards x 4 offense types = 32
+violent_crime_by_ward2 <- crime21 %>%
+  filter(violent_crime == 1) %>%
+  group_by(WARD, OFFENSE) %>%
+  summarise(count = n()) %>%
+  filter(!is.na(WARD))
+
+#Recoding offense variable
+violent_crime_by_ward2$OFFENSE[
+  violent_crime_by_ward2$OFFENSE == "ASSAULT W/DANGEROUS WEAPON"
+  ] <- "Assault w/dangerous weapon"
+violent_crime_by_ward2$OFFENSE[
+  violent_crime_by_ward2$OFFENSE == "HOMICIDE"
+] <- "Homicide"
+violent_crime_by_ward2$OFFENSE[
+  violent_crime_by_ward2$OFFENSE == "ROBBERY"
+] <- "Robbery"
+violent_crime_by_ward2$OFFENSE[
+  violent_crime_by_ward2$OFFENSE == "SEX ABUSE"
+] <- "Sex Abuse"
+```
+
+```{r}
+#| warning: false
+#| message: false
+#Creating a data frame with 32 rows
+#Want the counts for violent crimes in each 
+  #neighborhood cluster broken
+  #down by offense type
+#Note that there are 44 neighborhood clusters.
+  #Why 154 rows, not 176?
+  #After all, 44 x 4 = 176
+  #Reason: in some neighborhood clusters, there were
+    #0 cases of a specific offense.
+violent_crime_by_neigh_cluster <- crime21 %>%
+  filter(violent_crime == 1) %>%
+  group_by(NEIGHBORHOOD_CLUSTER, OFFENSE) %>%
+  summarise(count = n()) %>%
+  filter(!is.na(NEIGHBORHOOD_CLUSTER))
+```
+
+```{r}
+#| warning: false
+#| message: false
+#Creating a new data frame with 44 rows
+#Reason: I want a row for each neighborhood
+  #cluster and different columns for counts
+  #for each offense type
+violent_crime_by_neigh_cluster2 <-
+  pivot_wider(violent_crime_by_neigh_cluster,
+  names_from = OFFENSE,
+  values_from = count)
+
+#Replacing NAs with 0s
+#Explanation: in some neighborhood clusters,
+  #there were 0 cases of a specific offense.
+violent_crime_by_neigh_cluster2$`ASSAULT W/DANGEROUS WEAPON`[
+  is.na(violent_crime_by_neigh_cluster2$`ASSAULT W/DANGEROUS WEAPON`)] <- 0
+violent_crime_by_neigh_cluster2$ROBBERY[
+  is.na(violent_crime_by_neigh_cluster2$ROBBERY)] <- 0
+violent_crime_by_neigh_cluster2$`SEX ABUSE`[
+  is.na(violent_crime_by_neigh_cluster2$`SEX ABUSE`)] <- 0
+violent_crime_by_neigh_cluster2$HOMICIDE[
+  is.na(violent_crime_by_neigh_cluster2$HOMICIDE)] <- 0
+
+#Want a column name with just the number of a
+  #cluster (e.g., 1 instead of Cluster 1)
+violent_crime_by_neigh_cluster2[
+  c('Cluster_word', 'Cluster_num')] <- 
+  str_split_fixed(violent_crime_by_neigh_cluster2$NEIGHBORHOOD_CLUSTER, ' ', 2)
+violent_crime_by_neigh_cluster2$Cluster_word <- NULL
+```

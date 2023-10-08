@@ -169,3 +169,39 @@ violent_crime_by_neigh_cluster2$`Number of robberies` <-
   factor(violent_crime_by_neigh_cluster2$`Number of robberies`,
   levels=c("0-39","40-79", "80-119", "120+"))
 ```
+
+# First graph
+
+```{r}
+#| warning: false
+#| message: false
+#Adding first graph
+graph1 <- ggplot(data = violent_crime_by_ward, 
+#Aesthetic options: x, y, count
+  aes(x=factor(WARD), y=count, 
+    fill = factor(WARD))) +
+#Non-aesthetic options: stat, color
+  geom_bar(stat = "identity", color = "black") +
+#Aesthetic option: label
+#Non-aesthetic options: vjust, color, alpha
+  geom_text(aes(label = count), vjust = 1.5, 
+    colour = "black", alpha = 0.8) +
+  xlab("Ward") +
+  scale_x_discrete(
+    limits = factor(c(7,8,5,1,6,2,4,3))) +
+  ylab("Number of violent crimes in 2021") +
+  scale_y_continuous(breaks=seq(0,800,by=200)) +
+  labs(
+    title = "Number of violent crimes in each of the 8 wards",
+    subtitle = "Violent crime was most common in Wards 7 and 8",
+    caption = "Source: Open Data DC (2021)",
+    fill = "Ward") +
+  theme_classic()
+graph1
+```
+
+This bar graph shows the number of violent crimes that happened in each of the eight wards of Washington, DC in 2021. The ward where the most violent crimes happened was Ward 7 (917 cases) and the ward where the fewest violent crimes happened was Ward 3 (79). In total, there were 4,106 violent crimes in 2021.
+
+Wards 7 and 8 are high-poverty and have large populations of African Americans. The bar graph helps explain why residents of those wards are especially worried about violent crime.
+
+Note that Open Data DC categorizes homicides, sex abuses, assaults with dangerous weapons, and robberies as violent crimes. Meanwhile, Open Data DC categorizes arson, burglaries, theft with auto, and theft/other as property crimes. This may be a different way of defining violent crime than is used by other researchers but it is the conceptualization that I am using. (There were 24,208 property crimes in 2021, which is not shown in the graph.)

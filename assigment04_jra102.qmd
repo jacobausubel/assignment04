@@ -1,0 +1,11 @@
+---
+title: "Assignment 04"
+author: "Jacob Ausubel"
+date: "10/08/23"
+format: html
+execute: 
+  warning: false
+urlcolor: blue
+---
+
+## 

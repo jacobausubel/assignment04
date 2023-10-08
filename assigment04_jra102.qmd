@@ -177,7 +177,7 @@ violent_crime_by_neigh_cluster2$`Number of robberies` <-
 #| message: false
 #Adding first graph
 graph1 <- ggplot(data = violent_crime_by_ward, 
-#Aesthetic options: x, y, count
+#Aesthetic options: x, y, fill (multiple colors)
   aes(x=factor(WARD), y=count, 
     fill = factor(WARD))) +
 #Non-aesthetic options: stat, color
@@ -205,3 +205,34 @@ This bar graph shows the number of violent crimes that happened in each of the e
 Wards 7 and 8 are high-poverty and have large populations of African Americans. The bar graph helps explain why residents of those wards are especially worried about violent crime.
 
 Note that Open Data DC categorizes homicides, sex abuses, assaults with dangerous weapons, and robberies as violent crimes. Meanwhile, Open Data DC categorizes arson, burglaries, theft with auto, and theft/other as property crimes. This may be a different way of defining violent crime than is used by other researchers but it is the conceptualization that I am using. (There were 24,208 property crimes in 2021, which is not shown in the graph.)
+
+# Second graph
+
+```{r}
+#| warning: false
+#| message: false
+#Adding second graph
+graph2 <- violent_crime_by_ward2 %>%
+#Aesthetic options: x, y, fill (one color), width
+  ggplot(aes(x=WARD, y=count, fill="red", width = 0.8)) +
+#Non-aesthetic options: stat, color
+  geom_bar(stat = "identity", color = "black") +
+  xlab("Ward") +
+  scale_x_reverse(
+    breaks = seq(8, 1, by = -1),
+    labels = c("8", "7", "6", "5", "4", "3", "2", "1")) +
+  ylab("Number of violent crimes in 2021") +
+  scale_y_continuous(breaks=seq(0,800,by=100)) +
+  labs(subtitle = "Homicides and sex abuse cases were relatively uncommon",
+    caption = "Source: Open Data DC (2021)",
+    fill = "Ward") +
+  ggtitle("Number of violent crimes by offense in all 8 wards") +
+  theme_tufte() +
+  facet_wrap(~OFFENSE) +
+  theme(legend.position="none")
+graph2
+```
+
+This faceted bar graph shows the number of assaults with dangerous weapons, homicides, robberies, and sex abuses that happened in each of the eight wards of Washington, DC in 2021. The graph suggests that homicides and sex abuses were relatively rare compared to the other two types of violent crime. In addition, the graph shows that assaults with dangerous weapons and robberies were especially likely to happen in Wards 7 and 8 but were rare in Ward 3. Variation in the frequency of homicides and sex abuses between wards were much smaller.
+
+The bar graph suggests that simply counting the number of violent crimes in each ward, as Graph 1 does, is not telling the full story. Rather, we need to break down the numbers by offense type in order to fully understand crime in Washington, DC.

@@ -16,6 +16,8 @@ https://opendata.dc.gov/datasets/DCGIS::crime-incidents-in-2021/about
 
 In this analysis, I demonstrate that violent crime is much more common in some parts of Washington, DC than in others. The motivation for the assignment is an uptick in crime in the city in recent years that has received substantial media attention. Lawmakers and policymakers need to keep variation in homicides, sex abuses, assaults with dangerous weapons, and robberies between wards and neighborhood clusters in mind when designing programs aimed at curbing violent crime.
 
+The dataset I'm using comes from Open Data DC and includes all of the reported crimes that happened in Washington, DC in 2021. I'm focusing on just the crimes that are categorized as violent crimes. (An explanation of the definition is provided later on.)
+
 # Initial data setup, cleaning, and manipulation
 
 ```{r}

@@ -240,6 +240,8 @@ The bar graph suggests that simply counting the number of violent crimes in each
 # Third graph
 
 ```{r}
+#| warning: false
+#| message: false
 #Adding third graph
 cors <- cor(violent_crime_by_neigh_cluster2$`ASSAULT W/DANGEROUS WEAPON`,
   violent_crime_by_neigh_cluster2$ROBBERY)
@@ -270,3 +272,36 @@ This scatterplot shows that there is a positive relationship between the number 
 Neighborhood clusters that had especially high levels of both assaults with dangerous weapons and robberies in 2021 include Cluster 2 (Columbia Heights, Mt. Pleasant, Pleasant Plains, Park View), Cluster 25 (NoMa, Union Station, Stanton Park, Kingman Park), and Cluster 39 (Congress Heights, Bellevue, Washington Highlands). Cluster 39 is in Ward 8, which I already showed has a high prevalence of violent crime.  However, Cluster 2 is in Ward 1 and Cluster 25 is split between Wards 6 and 7. This shows that even wards with lower overall levels of overall violent crime still have subsections that are very affected by it. The nuance is missed by Graphs 1 and 2 and so the inclusion of Graph 3 helps to tell a more complete story of crime in Washington, DC.
 
 One aspect of the scatterplot is slightly misleading: it shows *counts* of violent crimes, regardless of how many people live in a neighborhood cluster. If I conducted a more in-depth analysis in the future, I would want to account for the fact that some neighborhood clusters have much larger populations than others. If more people live in a neighborhood cluster, there are more opportunities for violent crime to happen, at least in theory.
+
+# Fourth graph
+
+```{r}
+#| warning: false
+#| message: false
+#Added fourth graph
+graph4 <- violent_crime_by_neigh_cluster2 %>%
+#Aesthetic features: x, fill (multiple colors),
+    #color (multiple colors)
+  ggplot(aes(x=ROBBERY, fill = `Number of robberies`, color=`Number of robberies`)) +
+  geom_histogram(bins = 15) +
+#Non-aesthetic features: x, linetype, color, linewidth
+  geom_vline(xintercept = 
+    median(violent_crime_by_neigh_cluster2$ROBBERY), 
+    linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 
+    mean(violent_crime_by_neigh_cluster2$ROBBERY), 
+    linetype = "dotted", color = "darkorange", 
+    linewidth = 0.8) +
+  xlab("Number of robberies") +
+  scale_y_continuous(breaks=seq(0,10,by=2)) +
+  ylab ("Count of neighborhood clusters") +
+  labs(title = "Number of robberies by neighborhood cluster",
+       subtitle = "Most places had fewer than 100 robberies",
+       caption = "Source: Open Data DC (2021)") +
+  theme_bw()
+graph4
+```
+
+This histogram shows that most neighborhood clusters had fewer than 100 robberies in 2021. Neighborhood clusters that experienced 0-to-39 robberies are shaded in red, those that experienced 40-to-79 robberies are shaded in green, those that experienced 80-to-119 robberies are shaded in cyan, and those that experienced 120 or more robberies are shaded in purple. The dashed black line shows that the median neighborhood cluster experienced only 35 robberies, while the dotted orange line shows that the mean neighborhood cluster experienced about 46 robberies.
+
+The histogram further illustrates that violent crime (in this case, robberies) was concentrated in a few neighborhood clusters in Washington, DC. It conveys similar information to Graph 3 but hones in one just one variable, as opposed to two.
